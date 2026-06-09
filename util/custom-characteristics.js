@@ -2,8 +2,10 @@
 module.exports = homebridge => {
   const Characteristic = homebridge.hap.Characteristic
 
-  const Formats = Characteristic.Formats
-  const Perms = Characteristic.Perms
+  // HAP-NodeJS v2 (Homebridge 2.0) moved these off the Characteristic class to
+  // the hap namespace; fall back to the old location for HB 1.x / test mocks.
+  const Formats = homebridge.hap.Formats || Characteristic.Formats
+  const Perms = homebridge.hap.Perms || Characteristic.Perms
 
   class ConsumptionCharacteristic extends Characteristic {
     constructor() {

@@ -78,10 +78,10 @@ module.exports = homebridge => {
       const service = this.service
 
       service.getCharacteristic(Characteristic.Hue)
-        .on('set', this._hueSetHandler.bind(this))
+        .onSet(this._hueSetHandler.bind(this))
 
       service.getCharacteristic(Characteristic.Saturation)
-        .on('set', this._saturationSetHandler.bind(this))
+        .onSet(this._saturationSetHandler.bind(this))
 
       this.device
         .on('change:' + this._redProperty, this._rgbChangeHandler, this)
@@ -92,25 +92,21 @@ module.exports = homebridge => {
     /**
      * Handles changes from HomeKit to the Hue characteristic.
      */
-    async _hueSetHandler(newValue, callback) {
+    _hueSetHandler(newValue) {
       if (this.hue !== newValue) {
         this.hue = newValue
         this._updateDeviceLightDebounced()
       }
-
-      callback()
     }
 
     /**
      * Handles changes from HomeKit to the Saturation characteristic.
      */
-    async _saturationSetHandler(newValue, callback) {
+    _saturationSetHandler(newValue) {
       if (this.saturation !== newValue) {
         this.saturation = newValue
         this._updateDeviceLightDebounced()
       }
-
-      callback()
     }
 
     async _updateDeviceLight() {

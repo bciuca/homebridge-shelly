@@ -1,7 +1,8 @@
 {
-  "name": "homebridge-shelly",
-  "version": "0.19.1",
-  "description": "Shelly plugin for Homebridge",
+  "name": "@bciuca/homebridge-shelly",
+  "version": "0.20.0",
+  "description": "Shelly plugin for Homebridge (private fork of alexryd/homebridge-shelly, updated for Homebridge 2.0)",
+  "private": true,
   "main": "index.js",
   "bin": "bin/homebridge-shelly",
   "scripts": {
@@ -19,15 +20,19 @@
     "shelly"
   ],
   "engines": {
-    "node": ">=12.0.0",
-    "homebridge": ">=1.0.0"
+    "node": "^22 || ^24",
+    "homebridge": "^1.6.0 || ^2.0.0"
   },
   "author": "Alexander Rydén",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/alexryd/homebridge-shelly.git"
+    "url": "git+https://github.com/bciuca/homebridge-shelly.git"
   },
+  "bugs": {
+    "url": "https://github.com/bciuca/homebridge-shelly/issues"
+  },
+  "homepage": "https://github.com/bciuca/homebridge-shelly#readme",
   "funding": {
     "type": "kofi",
     "url": "https://ko-fi.com/alexryd"

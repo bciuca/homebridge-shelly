@@ -73,7 +73,7 @@ module.exports = homebridge => {
 
       this.service
         .getCharacteristic(Characteristic.TargetDoorState)
-        .on('set', this._targetDoorStateSetHandler.bind(this))
+        .onSet(this._targetDoorStateSetHandler.bind(this))
 
       this.device
         .on(
@@ -86,11 +86,10 @@ module.exports = homebridge => {
     /**
      * Handles changes from HomeKit to the TargetDoorState characteristic.
      */
-    async _targetDoorStateSetHandler(newValue, callback) {
+    async _targetDoorStateSetHandler(newValue) {
       const d = this.device
 
       if (this.targetState === newValue) {
-        callback()
         return
       }
 
@@ -112,7 +111,6 @@ module.exports = homebridge => {
 
       try {
         await this._setPosition(position)
-        callback()
       } catch (e) {
         handleFailedRequest(
           this.log,
@@ -120,7 +118,7 @@ module.exports = homebridge => {
           e,
           'Failed to set ' + this._positionProperty
         )
-        callback(e)
+        throw e
       }
     }
 
@@ -139,7 +137,7 @@ module.exports = homebridge => {
 
       this.service
         .getCharacteristic(Characteristic.CurrentDoorState)
-        .setValue(this.currentState)
+        .updateValue(this.currentState)
     }
 
     detach() {

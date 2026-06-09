@@ -73,7 +73,7 @@ module.exports = homebridge => {
 
       this.service
         .getCharacteristic(Characteristic.Active)
-        .on('set', this._activeSetHandler.bind(this))
+        .onSet(this._activeSetHandler.bind(this))
 
       this.device.on(
         'change:' + this._activeProperty,
@@ -93,12 +93,11 @@ module.exports = homebridge => {
     /**
      * Handles changes from HomeKit to the Active characteristic.
      */
-    async _activeSetHandler(newValue, callback) {
+    async _activeSetHandler(newValue) {
       const d = this.device
       const nv = this._activeFromHomeKit(newValue)
 
       if (this.active === nv) {
-        callback()
         return
       }
 
@@ -113,7 +112,6 @@ module.exports = homebridge => {
           nv
         )
         await this._setActive(nv)
-        callback()
       } catch (e) {
         handleFailedRequest(
           this.log,
@@ -121,7 +119,7 @@ module.exports = homebridge => {
           e,
           'Failed to set ' + this._activeProperty
         )
-        callback(e)
+        throw e
       }
     }
 
@@ -140,7 +138,7 @@ module.exports = homebridge => {
 
       this.service
         .getCharacteristic(Characteristic.Active)
-        .setValue(this._activeToHomeKit(this.active))
+        .updateValue(this._activeToHomeKit(this.active))
     }
 
     /**
@@ -149,7 +147,7 @@ module.exports = homebridge => {
     _inUseChangeHandler(newValue) {
       this.service
         .getCharacteristic(Characteristic.InUse)
-        .setValue(this._inUseToHomeKit(this.inUse))
+        .updateValue(this._inUseToHomeKit(this.inUse))
     }
 
     detach() {

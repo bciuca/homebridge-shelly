@@ -74,10 +74,10 @@ module.exports = homebridge => {
       const service = this.service
 
       service.getCharacteristic(Characteristic.On)
-        .on('set', this._onSetHandler.bind(this))
+        .onSet(this._onSetHandler.bind(this))
 
       service.getCharacteristic(Characteristic.Brightness)
-        .on('set', this._brightnessSetHandler.bind(this))
+        .onSet(this._brightnessSetHandler.bind(this))
 
       this.device
         .on(
@@ -93,7 +93,7 @@ module.exports = homebridge => {
 
       if (this._colorTemperatureProperty) {
         service.getCharacteristic(Characteristic.ColorTemperature)
-          .on('set', this._colorTemperatureSetHandler.bind(this))
+          .onSet(this._colorTemperatureSetHandler.bind(this))
 
         this.device.on(
           'change:' + this._colorTemperatureProperty,
@@ -106,34 +106,28 @@ module.exports = homebridge => {
     /**
      * Handles changes from HomeKit to the On characteristic.
      */
-    _onSetHandler(newValue, callback) {
+    _onSetHandler(newValue) {
       if (this.on !== newValue) {
         this._updateDeviceLightDebounced()
       }
-
-      callback()
     }
 
     /**
      * Handles changes from HomeKit to the Brightness characteristic.
      */
-    _brightnessSetHandler(newValue, callback) {
+    _brightnessSetHandler(newValue) {
       if (this.brightness !== newValue) {
         this._updateDeviceLightDebounced()
       }
-
-      callback()
     }
 
     /**
      * Handles changes from HomeKit to the ColorTemperature characteristic.
      */
-    _colorTemperatureSetHandler(newValue, callback) {
+    _colorTemperatureSetHandler(newValue) {
       if (this.colorTemperature !== newValue) {
         this._updateDeviceLightDebounced()
       }
-
-      callback()
     }
 
     /**
@@ -214,7 +208,7 @@ module.exports = homebridge => {
 
       this.service
         .getCharacteristic(Characteristic.On)
-        .setValue(this.on)
+        .updateValue(this.on)
     }
 
     /**
@@ -232,7 +226,7 @@ module.exports = homebridge => {
 
       this.service
         .getCharacteristic(Characteristic.Brightness)
-        .setValue(this.brightness)
+        .updateValue(this.brightness)
     }
 
     /**
@@ -250,7 +244,7 @@ module.exports = homebridge => {
 
       this.service
         .getCharacteristic(Characteristic.ColorTemperature)
-        .setValue(this._colorTemperatureToHomekit(this.colorTemperature))
+        .updateValue(this._colorTemperatureToHomekit(this.colorTemperature))
     }
 
     detach() {

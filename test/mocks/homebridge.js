@@ -32,6 +32,23 @@ class Characteristic extends EventEmitter {
     this.emit('change', value)
     return this
   }
+
+  // HAP-NodeJS v2 (Homebridge 2.0) API
+  updateValue(value) {
+    this.value = value
+    this.emit('change', value)
+    return this
+  }
+
+  onGet(handler) {
+    this._onGet = handler
+    return this
+  }
+
+  onSet(handler) {
+    this._onSet = handler
+    return this
+  }
 }
 
 class BatteryLevel extends Characteristic {
@@ -283,6 +300,8 @@ class BatteryService extends Service {
   }
 }
 Service.BatteryService = BatteryService
+// HAP-NodeJS v2 renamed BatteryService -> Battery
+Service.Battery = BatteryService
 
 class HumiditySensor extends Service {
   constructor() {
@@ -371,6 +390,9 @@ class Homebridge extends EventEmitter {
       Accessory,
       Characteristic,
       Service,
+      // HAP-NodeJS v2 exposes these on the hap namespace, not Characteristic
+      Formats: Characteristic.Formats,
+      Perms: Characteristic.Perms,
       uuid: {
         generate: () => {},
       },

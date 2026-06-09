@@ -141,7 +141,7 @@ module.exports = homebridge => {
 
       this.service
         .getCharacteristic(Characteristic.TargetPosition)
-        .on('set', this._targetPositionSetHandler.bind(this))
+        .onSet(this._targetPositionSetHandler.bind(this))
 
       this.device
         .on(
@@ -159,10 +159,8 @@ module.exports = homebridge => {
     /**
      * Handles changes from HomeKit to the TargetPosition characteristic.
      */
-    _targetPositionSetHandler(newValue, callback) {
+    _targetPositionSetHandler(newValue) {
       const d = this.device
-
-      callback()
 
       if (this.targetPosition === newValue ||
           this._setPositionTimeout !== null) {
@@ -211,7 +209,7 @@ module.exports = homebridge => {
 
       this.service
         .getCharacteristic(Characteristic.PositionState)
-        .setValue(this.positionState)
+        .updateValue(this.positionState)
 
       this._updateTargetPositionDebounced()
     }
@@ -231,7 +229,7 @@ module.exports = homebridge => {
 
       this.service
         .getCharacteristic(Characteristic.CurrentPosition)
-        .setValue(this.position)
+        .updateValue(this.position)
 
       this._updateTargetPositionDebounced()
     }
@@ -284,7 +282,7 @@ module.exports = homebridge => {
 
         this.service
           .getCharacteristic(Characteristic.TargetPosition)
-          .setValue(targetPosition)
+          .updateValue(targetPosition)
       }
     }
 
@@ -404,8 +402,7 @@ module.exports = homebridge => {
       if (this._updater) {
         // we only need to listen for changes to the characteristic if we have
         // an updater function
-        this.characteristic.on(
-          'set',
+        this.characteristic.onSet(
           this._characteristicSetHandler.bind(this)
         )
       }
@@ -435,12 +432,11 @@ module.exports = homebridge => {
     /**
      * Handles changes from HomeKit to our characteristic.
      */
-    async _characteristicSetHandler(newValue, callback) {
+    async _characteristicSetHandler(newValue) {
       const d = this.device
       const nv = this._valueFromHomeKit(newValue)
 
       if (this.value === nv) {
-        callback()
         return
       }
 
@@ -455,7 +451,6 @@ module.exports = homebridge => {
           nv
         )
         await this._updater(nv)
-        callback()
       } catch (e) {
         handleFailedRequest(
           this.log,
@@ -463,7 +458,7 @@ module.exports = homebridge => {
           e,
           'Failed to set ' + this._propertyName
         )
-        callback(e)
+        throw e
       }
     }
 
@@ -484,7 +479,7 @@ module.exports = homebridge => {
         ? this._propertyGetter.call(this.device, this._propertyName)
         : newValue
 
-      this.characteristic.setValue(
+      this.characteristic.updateValue(
         this._valueToHomeKit(nv)
       )
 
